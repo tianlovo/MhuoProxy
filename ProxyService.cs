@@ -66,6 +66,7 @@ internal class ProxyService
     /// </summary>
     public void Shutdown()
     {
+        _webProxyServer.DisableAllSystemProxies();
         _webProxyServer.Stop();
         _webProxyServer.Dispose();
     }
