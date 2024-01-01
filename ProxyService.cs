@@ -25,14 +25,18 @@ internal class ProxyService
     private readonly ProxyServer _webProxyServer;
     private readonly string _targetRedirectHost;
     private readonly int _targetRedirectPort;
+    private bool _useSsl;
 
     /// <summary>
     /// 代理服务类的构造函数
     /// </summary>
-    /// <param name="targetRedirectHost">目标重定向主机名</param>
-    /// <param name="targetRedirectPort">目标重定向端口号</param>
-    public ProxyService(string targetRedirectHost, int targetRedirectPort)
+    /// <param name="targetRedirectHost">将请求转发到哪个主机</param>
+    /// <param name="targetRedirectPort">将请求转发到哪个端口号</param>
+    /// <param name="useSsl">是否使用SSL</param>
+    public ProxyService(string targetRedirectHost, int targetRedirectPort, bool useSsl = false)
     {
+        _useSsl = useSsl || targetRedirectPort == 443;
+
         _webProxyServer = new ProxyServer();
         _webProxyServer.CertificateManager.EnsureRootCertificate();
 
@@ -122,7 +126,7 @@ internal class ProxyService
         }
         
         var requestUrl = args.HttpClient.Request.Url;
-        var local = new Uri($"http://{_targetRedirectHost}:{_targetRedirectPort}/");
+        var local = new Uri((_useSsl ? "https" : "http" ) + $"://{_targetRedirectHost}:{_targetRedirectPort}/");
 
         var replacedUrl = new UriBuilder(requestUrl)
         {

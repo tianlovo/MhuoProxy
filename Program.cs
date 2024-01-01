@@ -13,7 +13,7 @@ internal static class Program
     {
         Console.Title = Title;
         
-        _sProxyService = new ProxyService("127.0.0.1", 8888);
+        _sProxyService = new ProxyService("127.0.0.1", 443);
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         Console.CancelKeyPress += OnProcessExit;
         
